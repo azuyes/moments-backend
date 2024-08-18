@@ -1,52 +1,32 @@
-# from datetime import timedelta
-# import time
-# from typing import Annotated
-# from app.api import crud
-# from app.core import login_secure
-# from app.models.BaseModels.Token import Token
-# from fastapi import APIRouter, Body, Depends, HTTPException, Request
-# from fastapi.security import OAuth2PasswordRequestForm
-# from app.api.depends import SessionDep, get_client_ip
-# from app.core.config import settings
-# from app.core.security import create_access_token
-# from app.models.PublicModels.In import PhoneNumberIn
-# from app.models.PublicModels.Out import ErrorMod, RespMod
-# from app.models.table import SMSCodeRecord
-# router = APIRouter()
+from datetime import timedelta
+import time
+from typing import Annotated
+from app.api import crud
+from app.api.dao.dbOperation import getUserFromDB
+from app.core import login_secure
+from app.models.BaseModels.Token import Token
+from fastapi import APIRouter, Body, Depends, HTTPException, Request
+from fastapi.security import OAuth2PasswordRequestForm
+from app.api.depends import SessionDep, get_client_ip
+from app.core.config import settings
+from app.core.security import create_access_token
+from app.models.PublicModels.In import PhoneNumberIn, getUserIn
+from app.models.PublicModels.Out import ErrorMod, RespMod
+from app.models.table import SMSCodeRecord, Moment_User
+from app.service.RequestService import *
 
+router = APIRouter()
 
-# @router.post("/request_sms_code", summary="发送登录验证码", response_model=RespMod)
-# async def request_sms_code(
-#     session: SessionDep,
-#     phone_number: PhoneNumberIn = Body(),
-#     client_ip: str = Depends(get_client_ip)
-# ):
-#     """
-#     发送短信验证码给手机号注册的用户
-#     验证码60秒内只能请求一次，请勿重复请求。
-#     """
-#     phone_number = phone_number.phone_number
-#     # ip安全过滤，同ip60秒内只能发送一次验证码
-#     login_secure.sms_code_ip_secure(session, client_ip)
-#     sms_code_record_phone = session.get_one(
-#         SMSCodeRecord, phone_number=phone_number)
-#     if sms_code_record_phone is None:
-#         # 手机号下发送记录不存在，发送验证码
-#         await send_sms_code_to_phone_number(session=session, phone_number=phone_number, client_ip=client_ip)
-#         return RespMod(message="验证码发送成功。")
-#     else:
-#         # 存在不同IP地址下，同一个手机号的发送记录
-#         # 检测该记录是否已过期？
-#         if sms_code_record_phone.is_expired():
-#             # 手机记录已过期，删除手机记录，重新发送验证码
-#             crud.delete_sms_code_record(
-#                 session=session,
-#                 sms_code_record=sms_code_record_phone)
-#             await send_sms_code_to_phone_number(session=session, phone_number=phone_number, client_ip=client_ip)
-#             return RespMod(message="验证码发送成功。")
-#         else:
-#             sec = sms_code_record_phone.sec_to_open()
-#             raise ErrorMod(message=f"调用过于频繁，请{sec}秒后再试。")
+@router.get("/")
+async def root():
+    user=getUser('azu')
+    return RespMod(message="Success",data=user)
+
+@router.post("/getUser", response_model=RespMod)
+async def getUser(user:getUserIn=Body()):
+    name=user.username
+    selected_user=getUserFromDB(name)
+    return RespMod(message="Success",data=dict(selected_user))
 
 
 # # 调用阿里云短信服务发送短信，并且，记录发送记录

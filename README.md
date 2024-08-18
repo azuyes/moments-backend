@@ -155,3 +155,8 @@ POSTGRES_DB=app
 
 启动项目后，访问 API 文档：
 http://localhost/docs
+
+
+############ by azuyes
+toml文件是poetry的主配置，lock是他的附属，改了toml以后，要运行poetry lock命令生成lock文件
+按照poetry导入的指令是poetry install

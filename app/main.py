@@ -1,9 +1,10 @@
 
 
-from .api.main import api_router
+from app.api.main import api_router
 
 from app.core.config import settings
 from fastapi import FastAPI
+import uvicorn
 
 # 创建 FastAPI 应用程序实例
 app = FastAPI(
@@ -17,3 +18,6 @@ app = FastAPI(
 
 # 添加主 API 路由器，指定前缀为 API_V1_STR
 app.include_router(api_router, prefix=settings.API_V1_STR)
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="localhost", port=8000)
