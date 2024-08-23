@@ -1,16 +1,19 @@
 from datetime import timedelta
 import time
 from typing import Annotated
+
+from starlette.responses import JSONResponse
+
 from app.api import crud
 from app.api.dao.dbOperation import getUserFromDB
 from app.core import login_secure
-from app.models.BaseModels.Token import Token
+from app.core.login_secure import *
 from fastapi import APIRouter, Body, Depends, HTTPException, Request
 from fastapi.security import OAuth2PasswordRequestForm
 from app.api.depends import SessionDep, get_client_ip
 from app.core.config import settings
 from app.core.security import create_access_token
-from app.models.PublicModels.In import PhoneNumberIn, getUserIn
+from app.models.PublicModels.In import getUserIn, getLoginIn
 from app.models.PublicModels.Out import ErrorMod, RespMod
 from app.models.table import SMSCodeRecord, Moment_User
 from app.service.RequestService import *
@@ -23,10 +26,27 @@ async def root():
     return RespMod(message="Success",data=user)
 
 @router.post("/getUser", response_model=RespMod)
-async def getUser(user:getUserIn=Body()):
+async def getUser(user: getUserIn=Body()):
     name=user.username
     selected_user=getUserFromDB(name)
     return RespMod(message="Success",data=dict(selected_user))
+
+@router.post("/login-auth", response_model=RespMod)
+async def login_auth(user: getLoginIn=Body()):
+    name=user.username
+    pwd=user.hashed_password
+    if check_pwd(name,pwd):
+        token=gen_token(name)
+        return RespMod(message="Success",data=dict({'token':token}))
+    else:
+        return JSONResponse(status_code=401, content={"message": "Unauthorized"})
+
+@router.post("/verify-auth", response_model=RespMod)
+async def login_auth(request: Request):
+    headers=request.headers
+    token=headers.get("Authorization")
+    verify_token(token)
+    return RespMod(message="Success",data=dict({}))
 
 
 # # 调用阿里云短信服务发送短信，并且，记录发送记录

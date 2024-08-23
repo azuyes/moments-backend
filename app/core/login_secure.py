@@ -1,4 +1,47 @@
 # from sqlmodel import Session
+import jwt
+import datetime
+import logging
+
+from app.api.dao.dbOperation import getUserFromDB
+
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+# 密钥，用于签名和验证JWT
+secret_key = 'moment_secret_key_hahaha'
+exp_days=1
+encr_algo='HS256'
+
+def gen_token(username:str):
+    # 载荷，即JWT中包含的信息
+    payload = {
+        'username': username,
+        'exp': datetime.datetime.utcnow() + datetime.timedelta(days=exp_days)
+    }
+    # 生成JWT
+    token = jwt.encode(payload, secret_key, algorithm=encr_algo)
+    print('Generated JWT for user:',username,"; ", token)
+    return token
+
+def check_pwd(username:str, password:str):
+    user=getUserFromDB(username)
+    if user.hashed_password!=password:
+        return False
+    else:
+        return True
+
+def verify_token(token:str):
+    try:
+        decoded_payload = jwt.decode(token, secret_key, algorithms=[encr_algo])
+        logger.info('verify_token no problem-->username:'+ str( decoded_payload['username']))
+        return True
+    except jwt.ExpiredSignatureError:
+        logger.warning('JWT has expired.'+str(decoded_payload['username']))
+        return False
+    except jwt.InvalidTokenError:
+        logger.warning('Invalid JWT.')
+        return False
 
 
 # def login_secure(session: Session, phone_number: str):

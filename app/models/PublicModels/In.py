@@ -7,3 +7,7 @@ class PhoneNumberIn(SQLModel):
 
 class getUserIn(BaseModel):
     username: str
+
+class getLoginIn(BaseModel):
+    username: str
+    hashed_password:str

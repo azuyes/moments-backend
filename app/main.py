@@ -1,10 +1,15 @@
 
+from starlette.responses import JSONResponse
 
 from app.api.main import api_router
-
 from app.core.config import settings
-from fastapi import FastAPI
+from fastapi import FastAPI,Request
+from app.core.login_secure import verify_token
+import time
 import uvicorn
+import logging
+
+from app.models.PublicModels.Out import ErrorMod
 
 # 创建 FastAPI 应用程序实例
 app = FastAPI(
@@ -15,6 +20,23 @@ app = FastAPI(
     # redoc_url=None,  # 禁用 Redoc 文档,
 )
 
+logging.basicConfig(level=logging.INFO)
+logger = logging.getLogger(__name__)
+
+@app.middleware("http")
+async def add_process_time_header(request: Request, call_next):
+    start_time = time.time()
+    token=request.headers.get("Authorization")
+    url=request.url.path
+    if not verify_token(token) and url.find('login-auth')==-1:
+        return JSONResponse(status_code=401, content={"message": "Unauthorized"})
+    response = await call_next(request)
+    process_time = time.time() - start_time
+
+    # X- 作为前缀代表专有自定义请求头
+    response.headers["X-Process-Time"] = str(process_time)
+    logger.info(str(url)+" process_time: "+str(process_time))
+    return response
 
 # 添加主 API 路由器，指定前缀为 API_V1_STR
 app.include_router(api_router, prefix=settings.API_V1_STR)
