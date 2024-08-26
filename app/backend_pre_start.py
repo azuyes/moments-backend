@@ -1,5 +1,4 @@
-
-
+import ffmpeg
 # 每次启动时连接数据库并且自动重试
 
 
@@ -43,6 +42,23 @@ def main() -> None:
     logger.info("✅——————完成数据库连接")
     # LogSNAG.get_instance().service_init_success()
 
+def ffmpeg_gen():
+    # 输入 MP3 文件的路径
+    input_file = f'C:/playlist/HeyJude.mp3'
+    # 输出 HLS 文件的目录
+    output_dir = f'C:/playlist'
+
+    # 使用 ffmpeg-python 生成 HLS 流
+    ffmpeg.input(input_file).output(
+        f'{output_dir}/playlist.m3u8',  # 输出的播放列表文件
+        codec='aac',  # 音频编解码器
+        audio_bitrate='128k',  # 音频比特率
+        format='hls',  # 输出格式为 HLS
+        hls_time=10,  # 每个 .ts 文件的持续时间（秒）
+        hls_list_size=0,  # 播放列表包含所有切片
+        hls_segment_filename=f'{output_dir}/segment_%03d.ts'  # 切片文件的命名格式
+    ).run()
+
 
 if __name__ == "__main__":
-    main()
+    ffmpeg_gen()

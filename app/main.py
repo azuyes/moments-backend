@@ -1,5 +1,6 @@
-
+from starlette.middleware.cors import CORSMiddleware
 from starlette.responses import JSONResponse
+from starlette.staticfiles import StaticFiles
 
 from app.api.main import api_router
 from app.core.config import settings
@@ -23,6 +24,16 @@ app = FastAPI(
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+HLS_DIR='C:\\playlist'
+
+# app.add_middleware(
+#     CORSMiddleware,
+#     allow_origins=["*"],  # 或者指定允许的来源，如 ["http://localhost:3000"]
+#     allow_credentials=True,
+#     allow_methods=["*"],
+#     allow_headers=["*"],
+# )
+
 @app.middleware("http")
 async def add_process_time_header(request: Request, call_next):
     start_time = time.time()
@@ -37,6 +48,8 @@ async def add_process_time_header(request: Request, call_next):
     response.headers["X-Process-Time"] = str(process_time)
     logger.info(str(url)+" process_time: "+str(process_time))
     return response
+
+app.mount("/hls", StaticFiles(directory=HLS_DIR), name="hls")
 
 # 添加主 API 路由器，指定前缀为 API_V1_STR
 app.include_router(api_router, prefix=settings.API_V1_STR)
