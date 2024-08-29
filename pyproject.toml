@@ -14,12 +14,13 @@ alembic = "^1.13.2"
 psycopg2-binary = "^2.9.9"
 watchfiles = "^0.22.0"
 pydantic-settings = "^2.3.4"
-psycopg = "^3.2.1"
+psycopg = {extras = ["binary"], version = "^3.2.1"}
 passlib = "^1.7.4"
 python-jose = "^3.3.0"
 psycopg2 = "^2.9.9"
 pyjwt = "^2.9.0"
 ffmpeg-python = "^0.2.0"
+requests = "^2.32.3"
 
 
 [build-system]
