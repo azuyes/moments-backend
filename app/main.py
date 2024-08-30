@@ -55,4 +55,4 @@ app.mount("/hls", StaticFiles(directory=HLS_DIR), name="hls")
 app.include_router(api_router, prefix=settings.API_V1_STR)
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="localhost", port=8000)
+    uvicorn.run(app, host="0.0.0.0", port=8000)
