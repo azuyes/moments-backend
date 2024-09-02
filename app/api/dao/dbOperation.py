@@ -19,7 +19,7 @@ def getUserFromDB(username:str):
             logger.info("user查询成功："+str(user))
             return user
     except Exception as e:
-        logger.error("user查询失败："+e)
+        logger.error("user查询失败："+str(e))
         raise e
 
 def addUser(id:str,username:str,phone_number:str,is_active:bool,is_superuser:bool,hashed_password:str):
@@ -31,5 +31,5 @@ def addUser(id:str,username:str,phone_number:str,is_active:bool,is_superuser:boo
             session.commit()
             logger.info("user添加成功："+str(user))
     except Exception as e:
-        logger.error("user添加失败："+e)
+        logger.error("user添加失败："+str(e))
         raise e
