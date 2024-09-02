@@ -92,6 +92,8 @@ class Settings(BaseSettings):
     # PostgreSQL 数据库名称
     POSTGRES_DB: str = ""
 
+    HLS_DIR: str = "/app"
+
     # 数据库连接URL
     @computed_field  # type: ignore[misc]
     @property
