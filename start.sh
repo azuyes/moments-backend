@@ -9,4 +9,6 @@ set -e
 #python /app/app/initial_data.py
 # 启动应用
 #exec uvicorn app.main:app --reload --host 0.0.0.0 --port 80
-python /app/app/main.py
+mkdir -p /app/logs
+touch /app/logs/shelllog.output
+python /app/app/main.py >> /app/logs/shelllog.output 2>&1
