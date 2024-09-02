@@ -44,4 +44,4 @@ COPY .env /app/app
 # 给启动脚本添加执行权限
 RUN chmod +x /app/start.sh
 # 设置容器启动时执行的命令，这里是运行启动脚本
-# CMD ["/app/start.sh"]
+CMD ["/app/start.sh"]
