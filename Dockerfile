@@ -29,6 +29,8 @@ COPY --from=requirements-stage /tmp/requirements.txt /app/requirements.txt
 # --upgrade 选项确保安装最新版本的包
 RUN pip install --no-cache-dir --upgrade -r /app/requirements.txt 
 
+RUN apt-get update && apt-get install -y less
+
 # 设置环境变量 PYTHONPATH，确保 Python 可以找到应用程序模块
 ENV PYTHONPATH=/app
 # 设置环境变量 WORKERS_PER_CORE，可能用于配置 ASGI 服务器的工作进程数
