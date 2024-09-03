@@ -9,7 +9,7 @@ from sqlmodel import SQLModel
 class Moment_User(UserBase, table=True):
     __tablename__ = "MOMENT_USER"
     metadata = MetaData(schema="public")
-    id: int = Field(primary_key=True)
+    id: str = Field(primary_key=True)
 
 class User(UserBase, table=True):
     id: int = Field(primary_key=True)

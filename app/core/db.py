@@ -3,7 +3,8 @@ from sqlmodel import Session, create_engine, select
 from app.core.config import settings
 from app.core.security import get_password_hash
 from app.models.BaseModels.User import UserCreate
-from app.models.table import User
+from app.models.table import User, Moment_User
+
 # from app import crud
 # from app.core.config import settings
 # from app.models.User import UserCreate
@@ -44,26 +45,25 @@ def init_db(session: Session) -> None:
     # # 创建超级用户
     # # 查找第一个超级用户
     user = session.exec(
-        select(User)
-        .where(User.phone_number == settings.FIRST_SUPERUSER_PHONE_NUMBER)
+        select(Moment_User)
+        .where(Moment_User.username == settings.FIRST_SUPERUSER)
     ).first()
 
     # 如果找不到超级用户, 则创建一个新的超级用户
     if not user:
-        user = UserCreate(username=settings.FIRST_SUPERUSER,
-                          phone_number=settings.FIRST_SUPERUSER_PHONE_NUMBER,
-                          password=settings.FIRST_SUPERUSER_PASSWORD)
+        user = create_user(session=session)
 
 
-def create_user(*, session: Session, user_create: UserCreate) -> User:
+def create_user(session: Session) -> Moment_User:
     """
     创建新用户并设置其邀请码。
     """
     # 验证数据并哈希密码
-    new_user = User.model_validate(
-        user_create,
-        update={"hashed_password": get_password_hash(user_create.password)}
-    )
+    # new_user = User.model_validate(
+    #     user_create,
+    #     update={"hashed_password": get_password_hash(user_create.password)}
+    # )
+    new_user=Moment_User(id='azu',username='azu',phone_number='13488856212',is_active=True,is_superuser=True,hashed_password='123456')
 
     # 将验证后的用户对象添加到数据库会话中
     session.add(new_user)

@@ -44,13 +44,13 @@ def main() -> None:
 
 def ffmpeg_gen():
     # 输入 MP3 文件的路径
-    input_file = f'C:/playlist/HeyJude.mp3'
+    input_file = f'{settings.MSC_ORIG_DIR}/testmsc/testmsc.mp3'
     # 输出 HLS 文件的目录
-    output_dir = f'C:/playlist'
+    output_dir = f'{settings.MSC_HLS_DIR}/testmsc'
 
     # 使用 ffmpeg-python 生成 HLS 流
     ffmpeg.input(input_file).output(
-        f'{output_dir}/playlist.m3u8',  # 输出的播放列表文件
+        f'{output_dir}/testmsc.m3u8',  # 输出的播放列表文件
         codec='aac',  # 音频编解码器
         audio_bitrate='128k',  # 音频比特率
         format='hls',  # 输出格式为 HLS

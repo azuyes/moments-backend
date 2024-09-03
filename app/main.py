@@ -24,7 +24,7 @@ app = FastAPI(
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-HLS_DIR=settings.HLS_DIR
+HLS_DIR=settings.MSC_HLS_DIR
 
 # app.add_middleware(
 #     CORSMiddleware,

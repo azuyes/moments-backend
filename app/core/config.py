@@ -115,6 +115,8 @@ class Settings(BaseSettings):
     FIRST_SUPERUSER_PHONE_NUMBER: str
     # # 用户开放注册标志
     # USERS_OPEN_REGISTRATION: bool = True
+    MSC_ORIG_DIR: str
+    MSC_HLS_DIR: str
 
     def _check_default_secret(self, var_name: str, value: str | None) -> None:
         # 检查默认的密钥

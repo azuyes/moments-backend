@@ -1,0 +1,16 @@
+#docker build -f PgDockerfile -t azuyes/moment-repo:pg .
+# 使用官方 PostgreSQL 镜像作为基础镜像
+FROM postgres:16
+
+# 环境变量定义数据库、用户和密码
+ENV POSTGRES_DB=moment
+ENV POSTGRES_USER=postgres
+ENV POSTGRES_PASSWORD=123456
+
+# 复制初始化脚本到容器中
+# 将 init.sql 脚本复制到 Docker 容器的 /docker-entrypoint-initdb.d/ 目录下
+# PostgreSQL 镜像在容器启动时会自动执行该目录下的所有脚本
+COPY init.sql /docker-entrypoint-initdb.d/
+
+# Expose PostgreSQL 默认端口
+EXPOSE 5432

@@ -43,6 +43,9 @@ COPY ./alembic.ini /app/
 # 复制启动脚本到容器的 /app/ 目录
 COPY start.sh /app/
 COPY .env /app/app
+RUN mkdir -p /app/playlist/orig
+RUN mkdir -p /app/playlist/hls
+COPY testmsc.mp3 /app/playlist/orig/
 # 给启动脚本添加执行权限
 RUN chmod +x /app/start.sh
 # 设置容器启动时执行的命令，这里是运行启动脚本
