@@ -31,7 +31,7 @@ app.add_middleware(
     allow_origins=["*"],  # 允许所有的来源
     allow_credentials=True,
     allow_methods=["*"],  # 允许所有的方法，包括 OPTIONS
-    allow_headers=["Authorization","Content-Type"],  # 允许所有的头部字段
+    allow_headers=["*"],  # 允许所有的头部字段
 )
 
 @app.middleware("http")
