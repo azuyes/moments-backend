@@ -26,13 +26,13 @@ logger = logging.getLogger(__name__)
 
 HLS_DIR=settings.MSC_HLS_DIR
 
-# app.add_middleware(
-#     CORSMiddleware,
-#     allow_origins=["*"],  # 或者指定允许的来源，如 ["http://localhost:3000"]
-#     allow_credentials=True,
-#     allow_methods=["*"],
-#     allow_headers=["*"],
-# )
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],  # 允许所有的来源
+    allow_credentials=True,
+    allow_methods=["*"],  # 允许所有的方法，包括 OPTIONS
+    allow_headers=["Authorization","Content-Type"],  # 允许所有的头部字段
+)
 
 @app.middleware("http")
 async def add_process_time_header(request: Request, call_next):
