@@ -31,7 +31,7 @@ app.add_middleware(
     allow_origins=["*"],  # 允许所有的来源
     allow_credentials=True,
     allow_methods=["*"],  # 允许所有的方法，包括 OPTIONS
-    allow_headers=["*"],  # 允许所有的头部字段
+    allow_headers=["Authorization"],  # 允许所有的头部字段
 )
 
 @app.middleware("http")
@@ -39,7 +39,7 @@ async def add_process_time_header(request: Request, call_next):
     start_time = time.time()
     token=request.headers.get("Authorization")
     url=request.url.path
-    if not verify_token(token) and url.find('login-auth')==-1:
+    if not verify_token(token) and url.find('login-auth')==-1 and request.method!='OPTIONS':
         return JSONResponse(status_code=401, content={"message": "Unauthorized"})
     response = await call_next(request)
     process_time = time.time() - start_time
