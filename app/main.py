@@ -38,7 +38,7 @@ app.add_middleware(
 async def custom_exception_handler(request: Request, exc: Bizexception):
     return JSONResponse(
         status_code=200,  # 或者任何其他适当的状态码
-        content={"code":f"{exc.error_code}","message": f"{exc.message}"},
+        content={"code":exc.error_code,"message": f"{exc.message}"},
     )
 
 @app.middleware("http")
@@ -46,7 +46,7 @@ async def add_process_time_header(request: Request, call_next):
     start_time = time.time()
     token=request.headers.get("Authorization")
     url=request.url.path
-    logger.info(str(url) + " input_parm=: <headers>" +str(request.headers)+'; <body>' +str(await request.body()))
+    logger.info(str(url)+'Method: '+str(request.method) + " input_parm=: <headers>" +str(request.headers)+'; <body>' +str(await request.body()))
     if (not verify_token(token)
             and url.find('login-auth')==-1 and url.find('addUser')==-1
             and request.method!='OPTIONS'):
