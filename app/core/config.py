@@ -117,6 +117,7 @@ class Settings(BaseSettings):
     # USERS_OPEN_REGISTRATION: bool = True
     MSC_ORIG_DIR: str
     MSC_HLS_DIR: str
+    LOGGING_DIR: str
 
     def _check_default_secret(self, var_name: str, value: str | None) -> None:
         # 检查默认的密钥

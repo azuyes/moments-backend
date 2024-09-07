@@ -10,8 +10,9 @@ from app.core.db import engine
 from app.core.config import settings
 import logging
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+from app.service.LogService import LogService
+
+logger=LogService(name=__name__).getLogger()
 
 max_tries = 60 * 5  # 5 minutes
 wait_seconds = 1

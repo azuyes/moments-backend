@@ -45,6 +45,8 @@ COPY start.sh /app/
 COPY .env /app/app
 RUN mkdir -p /app/playlist/orig/testmsc
 RUN mkdir -p /app/playlist/hls/testmsc
+RUN mkdir -p /app/logs
+RUN touch /app/logs/moment.log
 COPY testmsc.mp3 /app/playlist/orig/testmsc
 # 给启动脚本添加执行权限
 RUN chmod +x /app/start.sh

@@ -8,9 +8,9 @@ from fastapi import FastAPI,Request
 from app.core.login_secure import verify_token
 import time
 import uvicorn
-import logging
 
 from app.models.PublicModels.Out import ErrorMod
+from app.service.LogService import LogService
 
 # 创建 FastAPI 应用程序实例
 app = FastAPI(
@@ -21,8 +21,7 @@ app = FastAPI(
     # redoc_url=None,  # 禁用 Redoc 文档,
 )
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+logger=LogService(name=__name__).getLogger()
 
 HLS_DIR=settings.MSC_HLS_DIR
 
@@ -39,6 +38,7 @@ async def add_process_time_header(request: Request, call_next):
     start_time = time.time()
     token=request.headers.get("Authorization")
     url=request.url.path
+    logger.info(str(url) + " input_parm=: <headers>" +str(request.headers)+'; <body>' +str(await request.body()))
     if not verify_token(token) and url.find('login-auth')==-1 and request.method!='OPTIONS':
         return JSONResponse(status_code=401, content={"message": "Unauthorized"})
     response = await call_next(request)
@@ -46,7 +46,7 @@ async def add_process_time_header(request: Request, call_next):
 
     # X- 作为前缀代表专有自定义请求头
     response.headers["X-Process-Time"] = str(process_time)
-    logger.info(str(url)+" process_time: "+str(process_time))
+    logger.info(str(url)+" <process_time>: "+str(process_time))
     return response
 
 app.mount("/hls", StaticFiles(directory=HLS_DIR), name="hls")

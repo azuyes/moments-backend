@@ -1,10 +1,10 @@
 from app.core.db import engine
 from sqlmodel import Session,select
 from app.models.table import Moment_User
-import logging
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+from app.service.LogService import LogService
+
+logger=LogService(name=__name__).getLogger()
 
 '''
 User相关

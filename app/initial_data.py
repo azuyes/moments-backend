@@ -1,12 +1,11 @@
 #
 
 
-import logging
 from sqlmodel import Session
 from app.core.db import engine, init_db
+from app.service.LogService import LogService
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+logger=LogService(name=__name__).getLogger()
 
 
 def init() -> None:

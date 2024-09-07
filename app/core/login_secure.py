@@ -1,12 +1,11 @@
 # from sqlmodel import Session
 import jwt
 import datetime
-import logging
 
 from app.api.dao.dbOperation import getUserFromDB
+from app.service.LogService import LogService
 
-logging.basicConfig(level=logging.INFO)
-logger = logging.getLogger(__name__)
+logger=LogService(name=__name__).getLogger()
 
 # 密钥，用于签名和验证JWT
 secret_key = 'moment_secret_key_hahaha'
