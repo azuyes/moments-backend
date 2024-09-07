@@ -5,7 +5,7 @@ from typing import Annotated
 from starlette.responses import JSONResponse
 
 from app.api import crud
-from app.api.dao.dbOperation import getUserFromDB
+from app.api.dao.dbOperation import getUserFromDB, addUser
 from app.core import login_secure
 from app.core.login_secure import *
 from fastapi import APIRouter, Body, Depends, HTTPException, Request
@@ -13,7 +13,7 @@ from fastapi.security import OAuth2PasswordRequestForm
 from app.api.depends import SessionDep, get_client_ip
 from app.core.config import settings
 from app.core.security import create_access_token
-from app.models.PublicModels.In import getUserIn, getLoginIn
+from app.models.PublicModels.In import getUserIn, getLoginIn, addUserIn
 from app.models.PublicModels.Out import ErrorMod, RespMod
 from app.models.table import SMSCodeRecord, Moment_User
 from app.service.RequestService import *
@@ -46,6 +46,13 @@ async def login_auth(request: Request):
     headers=request.headers
     token=headers.get("Authorization")
     verify_token(token)
+    return RespMod(message="Success",data=dict({}))
+
+@router.post("/addUser", response_model=RespMod)
+async def login_auth(user:addUserIn=Body()):
+    result=addUser(id=user.username,username=user.username, hashed_password=user.hashed_password,
+                         phone_number=user.phone_number, is_active=True,is_superuser=False)
+
     return RespMod(message="Success",data=dict({}))
 
 

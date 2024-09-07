@@ -1,5 +1,7 @@
 from app.core.db import engine
 from sqlmodel import Session,select
+
+from app.models.BaseModels.Bizexception import Bizexception
 from app.models.table import Moment_User
 
 from app.service.LogService import LogService
@@ -26,10 +28,15 @@ def addUser(id:str,username:str,phone_number:str,is_active:bool,is_superuser:boo
     try:
         with Session(engine) as session:
             # Try to create session to check if DB is awake
+            any_user=session.query(Moment_User).filter_by(username=username).first()
+            if any_user:
+                logger.info('username: '+username+' already exist')
+                raise Bizexception(error_code=999,message='username: '+username+' already exist')
             user=Moment_User(id=id,username=username,phone_number=phone_number,is_active=is_active,is_superuser=is_superuser,hashed_password=hashed_password)
             session.add(user)
             session.commit()
-            logger.info("user添加成功："+str(user))
+            logger.info("user添加成功："+str(username))
+            return True
     except Exception as e:
         logger.error("user添加失败："+str(e))
         raise e

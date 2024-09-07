@@ -9,6 +9,7 @@ from app.core.login_secure import verify_token
 import time
 import uvicorn
 
+from app.models.BaseModels.Bizexception import Bizexception
 from app.models.PublicModels.Out import ErrorMod
 from app.service.LogService import LogService
 
@@ -33,13 +34,22 @@ app.add_middleware(
     allow_headers=["Authorization"],  # 允许所有的头部字段
 )
 
+@app.exception_handler(Bizexception)
+async def custom_exception_handler(request: Request, exc: Bizexception):
+    return JSONResponse(
+        status_code=200,  # 或者任何其他适当的状态码
+        content={"code":f"{exc.error_code}","message": f"{exc.message}"},
+    )
+
 @app.middleware("http")
 async def add_process_time_header(request: Request, call_next):
     start_time = time.time()
     token=request.headers.get("Authorization")
     url=request.url.path
     logger.info(str(url) + " input_parm=: <headers>" +str(request.headers)+'; <body>' +str(await request.body()))
-    if not verify_token(token) and url.find('login-auth')==-1 and request.method!='OPTIONS':
+    if (not verify_token(token)
+            and url.find('login-auth')==-1 and url.find('addUser')==-1
+            and request.method!='OPTIONS'):
         return JSONResponse(status_code=401, content={"message": "Unauthorized"})
     response = await call_next(request)
     process_time = time.time() - start_time

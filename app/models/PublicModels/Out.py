@@ -4,7 +4,7 @@ from sqlmodel import SQLModel
 
 class RespMod(SQLModel):
     message: str = ""
-    code: int = 200
+    code: int = 0
     data: dict | str | None | list = {}
 
 
