@@ -45,8 +45,11 @@ async def login_auth(user: getLoginIn=Body()):
 async def login_auth(request: Request):
     headers=request.headers
     token=headers.get("Authorization")
-    verify_token(token)
-    return RespMod(message="Success",data=dict({}))
+    res=verify_token(token)
+    if verify_token(token):
+        return RespMod(message="Success",data=dict({}))
+    else:
+        return ErrorMod(message="Unauthorized token")
 
 @router.post("/addUser", response_model=RespMod)
 async def login_auth(user:addUserIn=Body()):

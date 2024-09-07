@@ -36,7 +36,7 @@ def verify_token(token:str):
         logger.info('verify_token no problem-->username:'+ str( decoded_payload['username']))
         return True
     except jwt.ExpiredSignatureError:
-        logger.warning('JWT has expired.'+str(decoded_payload['username']))
+        logger.warning('JWT has expired.')
         return False
     except jwt.InvalidTokenError:
         logger.warning('Invalid JWT.')
