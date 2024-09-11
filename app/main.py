@@ -57,6 +57,7 @@ async def add_process_time_header(request: Request, call_next):
     # X- 作为前缀代表专有自定义请求头
     response.headers["X-Process-Time"] = str(process_time)
     logger.info(str(url)+" <process_time>: "+str(process_time))
+    logger.info("-----------------------------------------------------------")
     return response
 
 app.mount("/hls", StaticFiles(directory=HLS_DIR), name="hls")

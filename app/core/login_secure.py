@@ -25,7 +25,7 @@ def gen_token(username:str):
 
 def check_pwd(username:str, password:str):
     user=getUserFromDB(username)
-    if user.hashed_password!=password:
+    if user is None or user.hashed_password!=password:
         return False
     else:
         return True

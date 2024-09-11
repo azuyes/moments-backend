@@ -17,7 +17,7 @@ def getUserFromDB(username:str):
             # Try to create session to check if DB is awake
             statement = select(Moment_User).where(Moment_User.username == username)
             result=session.exec(statement)
-            user=result.one()
+            user=result.one_or_none()
             logger.info("user查询成功："+str(user))
             return user
     except Exception as e:
